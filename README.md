@@ -9,7 +9,8 @@ Automated end-to-end tests for the [3SNET Events Widget Constructor](https://dev
 | [Playwright](https://playwright.dev/) | Browser automation & test runner |
 | TypeScript | Strongly typed test code |
 | Page Object Model | Scalable test architecture |
-| HTML Reporter | Visual test results |
+| HTML + JSON Reporter | Visual and machine-readable test results |
+| Express.js | Local web UI server |
 | GitHub Actions | CI/CD pipeline |
 
 ---
@@ -20,20 +21,25 @@ Automated end-to-end tests for the [3SNET Events Widget Constructor](https://dev
 3snet-events-task/
 ├── pages/
 │   ├── EventsWidgetPage.ts      # POM: constructor page (buttons, iframe, embed code)
-│   └── EventsCalendarWidget.ts  # POM: widget content inside the iframe
+│   └── EventsCalendarWidget.ts  # POM: standalone widget page content
 ├── tests/
-│   └── eventsWidget.spec.ts     # All test cases (2 suites, 13 tests)
+│   └── eventsWidget.spec.ts     # Widget tests (2 suites, 13 tests)
+├── public/
+│   ├── index.html               # Web UI single-page frontend
+│   ├── style.css                # Dark theme, responsive layout
+│   └── app.js                   # Fetch-based state management
 ├── .github/
 │   └── workflows/
 │       └── playwright.yml       # GitHub Actions CI configuration
-├── playwright.config.ts         # Playwright configuration (baseURL, reporters, projects)
+├── server.js                    # Express server — runs tests, stores history
+├── playwright.config.ts         # Playwright configuration (baseURL, reporters)
 ├── tsconfig.json                # TypeScript compiler configuration
 └── package.json                 # Dependencies and npm run scripts
 ```
 
 ---
 
-## Installation & Running Tests
+## Installation
 
 ```bash
 # 1. Clone the repository
@@ -45,25 +51,44 @@ npm install
 
 # 3. Install Playwright browser binaries
 npx playwright install chromium
-
-# 4. Run all tests
-npm test
-
-# 5. Open the HTML report after the run
-npm run report
 ```
 
-**Additional commands:**
+## Running Tests
+
+### Command Line
+
+```bash
+npm test                  # Run all tests
+npm run report            # Open the HTML report
+```
+
+### Web UI (recommended)
+
+```bash
+npm run ui
+```
+
+Opens `http://localhost:3000` automatically. From there you can:
+- **Run tests** with a single click
+- **View results** — pass/fail counts, duration, and status per run
+- **Browse history** — every run is saved; click **Report →** to open the full Playwright HTML report
+- Works on desktop, tablet, and mobile browsers
+
+**All commands:**
 
 | Command | Description |
 |---|---|
-| `npm run test:headed` | Run tests with a visible browser window |
-| `npm run test:chromium` | Run only the Chromium project |
+| `npm test` | Run all widget tests in the terminal |
+| `npm run test:headed` | Run with a visible browser window |
+| `npm run test:chromium` | Run the Chromium project only |
 | `npm run report` | Open the last HTML report in the browser |
+| `npm run ui` | Launch the web interface at `http://localhost:3000` |
 
 ---
 
 ## Test Coverage
+
+### Widget Tests — `eventsWidget.spec.ts` (13 tests)
 
 | # | Suite | Test | What it verifies |
 |---|---|---|---|

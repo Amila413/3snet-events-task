@@ -2,12 +2,13 @@
   "name": "3snet-events-widget-automation",
   "version": "1.0.0",
   "description": "Automated QA tests for the 3SNET Events Widget constructor page using Playwright and TypeScript.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:chromium": "playwright test --project=chromium",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "ui": "node server.js"
   },
   "keywords": [
     "playwright",
@@ -22,5 +23,9 @@
   "devDependencies": {
     "@playwright/test": "^1.50.0",
     "@types/node": "^22.0.0"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "open": "^11.0.0"
   }
 }

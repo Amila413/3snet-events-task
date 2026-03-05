@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Local web interface to run 3SNET Playwright tests, view results, and browse run history." />
+  <title>3SNET Test Runner</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        <h1>3SNET Test Runner</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Running overlay ─────────────────────────────────── -->
+  <div id="progress-banner" class="progress-banner hidden" role="status" aria-live="polite">
+    <span class="spinner" aria-hidden="true"></span>
+    Running selected tests… this may take up to 60 seconds
+  </div>
+
+  <!-- ── Main content ────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- TESTS block -->
+    <section class="section" id="tests-section">
+      <h2 class="section-title">Tests</h2>
+      <div class="tests-card">
+
+        <!-- Select All row -->
+        <label class="test-item test-item--header" for="select-all">
+          <input type="checkbox" id="select-all" checked />
+          <span class="test-label test-label--all">Select / Deselect All</span>
+          <span class="test-count" id="selected-count"></span>
+        </label>
+
+        <div class="test-divider"></div>
+
+        <!-- Suite 1 -->
+        <p class="suite-label">Constructor Page — Basic Health Checks</p>
+        <label class="test-item" for="t1">
+          <input type="checkbox" id="t1" class="test-cb" checked data-name="should respond with HTTP 200" />
+          <span class="test-label">should respond with HTTP 200</span>
+        </label>
+        <label class="test-item" for="t2">
+          <input type="checkbox" id="t2" class="test-cb" checked data-name="should display the correct page title" />
+          <span class="test-label">should display the correct page title</span>
+        </label>
+        <label class="test-item" for="t3">
+          <input type="checkbox" id="t3" class="test-cb" checked
+            data-name='should display the "Generate preview" button' />
+          <span class="test-label">should display the "Generate preview" button</span>
+        </label>
+        <label class="test-item" for="t4">
+          <input type="checkbox" id="t4" class="test-cb" checked data-name="should display the embed code textarea" />
+          <span class="test-label">should display the embed code textarea</span>
+        </label>
+        <label class="test-item" for="t5">
+          <input type="checkbox" id="t5" class="test-cb" checked data-name='should display the "Copy code" button' />
+          <span class="test-label">should display the "Copy code" button</span>
+        </label>
+        <label class="test-item" for="t6">
+          <input type="checkbox" id="t6" class="test-cb" checked
+            data-name="should have no critical JS errors on page load" />
+          <span class="test-label">should have no critical JS errors on page load</span>
+        </label>
+        <label class="test-item" for="t7">
+          <input type="checkbox" id="t7" class="test-cb" checked
+            data-name="should render the embedded widget iframe element after preview generation" />
+          <span class="test-label">should render the embedded widget iframe element after preview generation</span>
+        </label>
+
+        <div class="test-divider"></div>
+
+        <!-- Suite 2 -->
+        <p class="suite-label">Widget Content — Live Data Verification</p>
+        <label class="test-item" for="t8">
+          <input type="checkbox" id="t8" class="test-cb" checked data-name="should render at least one event" />
+          <span class="test-label">should render at least one event</span>
+        </label>
+        <label class="test-item" for="t9">
+          <input type="checkbox" id="t9" class="test-cb" checked
+            data-name="should display event links pointing to activity pages" />
+          <span class="test-label">should display event links pointing to activity pages</span>
+        </label>
+        <label class="test-item" for="t10">
+          <input type="checkbox" id="t10" class="test-cb" checked
+            data-name="should display interactive date trigger links" />
+          <span class="test-label">should display interactive date trigger links</span>
+        </label>
+        <label class="test-item" for="t11">
+          <input type="checkbox" id="t11" class="test-cb" checked data-name="should display topic tag filter links" />
+          <span class="test-label">should display topic tag filter links</span>
+        </label>
+        <label class="test-item" for="t12">
+          <input type="checkbox" id="t12" class="test-cb" checked data-name="should display location filter links" />
+          <span class="test-label">should display location filter links</span>
+        </label>
+        <label class="test-item" for="t13">
+          <input type="checkbox" id="t13" class="test-cb" checked
+            data-name="should capture a visual screenshot of the widget" />
+          <span class="test-label">should capture a visual screenshot of the widget</span>
+        </label>
+
+        <div class="test-divider"></div>
+
+        <!-- Run button inside TESTS block -->
+        <div class="tests-footer">
+          <button id="run-btn" class="btn btn-primary" aria-label="Run selected Playwright tests">
+            <span class="btn-icon" aria-hidden="true">▶</span>
+            <span class="btn-label">Run Tests</span>
+          </button>
+          <span id="run-hint" class="run-hint">0 tests selected</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Latest Run Card -->
+    <section class="section" id="latest-section">
+      <h2 class="section-title">Latest Run</h2>
+      <div id="latest-card" class="latest-card empty-state">
+        <p class="empty-text">No runs yet. Select tests above and click <strong>Run Tests</strong>.</p>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section class="section" id="history-section">
+      <h2 class="section-title">Run History</h2>
+
+      <div class="table-wrapper" id="history-table-wrapper">
+        <table class="history-table" id="history-table" aria-label="Test run history">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date &amp; Time</th>
+              <th>✅ Passed</th>
+              <th>❌ Failed</th>
+              <th>⏱ Duration</th>
+              <th>Status</th>
+              <th>Report</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+
+      <ul class="history-cards" id="history-cards" aria-label="Test run history"></ul>
+      <p id="empty-history" class="empty-text">No history yet.</p>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
